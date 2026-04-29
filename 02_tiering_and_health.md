@@ -66,7 +66,8 @@ Rules evaluated in order. First match wins.
 
 ```
 IF sku_mismatch_flag:                              → LEGAL ESCALATION
-IF track == 'A' AND multi-year contract assumed:   → CONTRACT-PROTECTED
+IF track_mix == 'track_a_dominant' AND multi-year contract assumed:
+                                                   → CONTRACT-PROTECTED
                                                      (drives 'hold' disposition)
 ```
 
@@ -81,7 +82,7 @@ Complexity threshold of 75 is calibrated so that genuinely complex accounts (lar
 ```
 SENIOR MIGRATION (2):  Meridian, Northwind
 CHURN WATCH (2):       Palomar, Pivot (initial)
-                       Halfbrick (auto-promoted Day 14 — see health layer)
+                       Halfbrick (auto-promoted Day 7 — see health layer)
 STANDARD FLOW (8):     Soundtrap, Halfbrick (initial), Proof, Layer.ai,
                        Cube, Sphere, Kestrel, Corvus
 
@@ -89,7 +90,7 @@ FLAGS:
   Legal Escalation:    Proof, Kestrel, Northwind, Meridian, Pivot
                        (any account with sku_mismatch_flag)
   Contract-Protected:  Proof
-                       (Track A + multi-year contract assumed)
+                       (track_a_dominant + multi-year contract assumed)
 ```
 
 ### Computed scores per account
@@ -97,7 +98,7 @@ FLAGS:
 | Customer | Complexity | Churn Risk | Tier | Flags |
 |---|---|---|---|---|
 | Soundtrap | 48 | 30 | Standard | — |
-| Halfbrick | 54 | 50 | Standard → Churn Watch (Day 14) | — |
+| Halfbrick | 54 | 50 | Standard → Churn Watch (Day 7) | — |
 | Proof | 72 | 30 | Standard | Legal Escalation, Contract-Protected |
 | Layer.ai | 39 | 50 | Standard | — |
 | Cube | 44 | 30 | Standard | — |
@@ -162,7 +163,7 @@ type CustomerHealth = {
 | Palomar | red | red | amber | red | red | — (already Churn Watch) |
 | Pivot | red | amber | red | red | red | — (already Churn Watch) |
 | Soundtrap | green | green | green | green | green | — |
-| **Halfbrick** | **amber** | **red** | **red** | **green** | **red** | **AUTO-PROMOTED Day 14** |
+| **Halfbrick** | **amber** | **red** | **red** | **green** | **red** | **AUTO-PROMOTED Day 7** |
 | Proof | green | green | green | green | green | — |
 | Layer.ai | green | green | amber | green | amber | — |
 | Cube | green | green | green | green | green | — |
@@ -187,7 +188,7 @@ type CustomerHealth = {
 
 **Halfbrick responsiveness amber:** "HR lead response time slipped to 4 days, likely overwhelmed by ticket volume."
 
-**Halfbrick auto-promotion note:** "Auto-promoted from Standard Flow to Churn Watch on Day 14 due to compounding BR + IN payroll cycle pressure. 17-country footprint generating cascading worker tickets. Retention play activated; exec sponsor outreach scheduled. System caught the drift before customer escalated."
+**Halfbrick auto-promotion note:** "Auto-promoted from Standard Flow to Churn Watch on Day 7 due to compounding BR + IN payroll cycle pressure. 17-country footprint generating cascading worker tickets. Retention play activated; exec sponsor outreach scheduled. System caught the drift before customer escalated."
 
 **Layer.ai milestone amber:** "India statutory compliance review pending. Local payroll partner (India) engaged. No customer impact yet."
 

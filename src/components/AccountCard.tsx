@@ -172,9 +172,6 @@ function ExpandedEvidence({ customer }: { customer: Customer }) {
   return (
     <div className="space-y-4">
       <AccountBlock customer={customer} />
-      {customer.tierTransition === 'auto_promoted' && (
-        <AutoPromotionContext customer={customer} />
-      )}
       <RoutingSection customer={customer} />
       {customer.escalationEvents && customer.escalationEvents.length > 0 && (
         <EscalationSection events={customer.escalationEvents} />
@@ -187,7 +184,7 @@ function ExpandedEvidence({ customer }: { customer: Customer }) {
 // Auto-promotion context
 // =====================
 
-function AutoPromotionContext({ customer }: { customer: Customer }) {
+export function AutoPromotionContext({ customer }: { customer: Customer }) {
   const tierLabel: Record<Tier, string> = {
     senior_migration: 'Senior Migration',
     churn_watch: 'Churn Watch',

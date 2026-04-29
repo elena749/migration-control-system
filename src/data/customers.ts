@@ -251,7 +251,7 @@ export const customers: Customer[] = [
   },
 
   {
-    // 2. Halfbrick — pre-baked Day-14 auto-promotion (the historical proof)
+    // 2. Halfbrick — pre-baked Day-7 auto-promotion (the historical proof)
     id: 2,
     name: 'Halfbrick',
     source: 'REAL',
@@ -385,8 +385,8 @@ export const customers: Customer[] = [
         nextActionOwner: 'IN partner (no Deel-side action available)',
       },
       {
-        role: 'CSM team lead (Compliance)',
-        reason: 'Multi-jurisdictional ticket cascade',
+        role: 'CSM team lead',
+        reason: 'Worker ticket surge — BR + IN payroll cycles compounding',
         waitingOn: 'deel_internal',
         waitingSinceDays: 2,
         lastAction: 'Compliance review scheduled for Wednesday',
@@ -396,9 +396,9 @@ export const customers: Customer[] = [
     escalationEvents: [
       {
         tier: 3,
-        triggeredDaysAgo: 12,
+        triggeredDaysAgo: 7,
         triggeredBy:
-          'Auto-promotion to Churn Watch (Day 14 ago) — cross-functional channel activated',
+          'Auto-promotion to Churn Watch (Day 7 ago) — cross-functional channel activated',
         targetRole: 'Head of CS',
         acknowledgementState: 'acknowledged',
       },
