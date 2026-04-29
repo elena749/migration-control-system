@@ -7,13 +7,7 @@ import {
 } from 'react';
 import type { HealthSignal } from '../data/customers';
 
-export type Role =
-  | 'migration_lead'
-  | 'csm'
-  | 'ae'
-  | 'specialist'
-  | 'function_lead'
-  | 'vp_operations';
+export type Role = 'csm' | 'implementation_manager' | 'ghostbuster';
 
 export interface NorthwindFlipProgress {
   ticketsState: HealthSignal;
@@ -49,7 +43,7 @@ const initialFlipProgress: NorthwindFlipProgress = {
 };
 
 export const initialState: AppState = {
-  selectedRole: 'migration_lead',
+  selectedRole: 'csm',
   selectedAccountId: 2,
   northwindFlipped: false,
   northwindFlipInProgress: false,

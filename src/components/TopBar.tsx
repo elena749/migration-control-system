@@ -1,12 +1,9 @@
 import { useApp, type Role } from '../state/AppContext';
 
 const ROLE_OPTIONS: { value: Role; label: string }[] = [
-  { value: 'migration_lead', label: 'Migration Lead' },
   { value: 'csm', label: 'CSM' },
-  { value: 'ae', label: 'AE' },
-  { value: 'specialist', label: 'Specialist' },
-  { value: 'function_lead', label: 'Function Lead' },
-  { value: 'vp_operations', label: 'VP Operations' },
+  { value: 'implementation_manager', label: 'Implementation Manager' },
+  { value: 'ghostbuster', label: 'Ghostbuster' },
 ];
 
 export function TopBar() {

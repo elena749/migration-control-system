@@ -51,7 +51,6 @@ export function AccountCard({ customer, pulsingEnabled }: AccountCardProps) {
               <span className="text-base font-semibold text-ink-primary">
                 {customer.name}
               </span>
-              <ProfileChips customer={customer} />
             </div>
             <div className="flex items-center gap-3">
               <StatusBadge status={statusBadge} />
@@ -128,11 +127,18 @@ function StatusBadge({ status }: { status: { text: string; color: string } }) {
 // Profile chips
 // =====================
 
-function ProfileChips({ customer }: { customer: Customer }) {
-  const arrFormatted = `$${(customer.arrUsd / 1000).toFixed(0)}K`;
+function AccountBlock({ customer }: { customer: Customer }) {
+  const arrFormatted = `$${(customer.arrUsd / 1000).toFixed(0)}K ARR`;
+  const countriesLabel = `${customer.countriesCount} countries`;
+  const workersLabel = `${customer.workersTotal} workers`;
   return (
-    <div className="text-xs text-ink-tertiary">
-      {customer.countriesCount}c · {customer.workersTotal}w · {arrFormatted}
+    <div>
+      <div className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-1">
+        Account
+      </div>
+      <div className="text-sm text-neutral-700">
+        {countriesLabel} · {workersLabel} · {arrFormatted}
+      </div>
     </div>
   );
 }
@@ -165,6 +171,7 @@ function HealthDot({ signal, pulse = false }: { signal: HealthSignal; pulse?: bo
 function ExpandedEvidence({ customer }: { customer: Customer }) {
   return (
     <div className="space-y-4">
+      <AccountBlock customer={customer} />
       {customer.tierTransition === 'auto_promoted' && (
         <AutoPromotionContext customer={customer} />
       )}

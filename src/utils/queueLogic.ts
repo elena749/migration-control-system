@@ -31,7 +31,7 @@ export function groupByTier(customers: Customer[]): GroupedCustomers {
   return { seniorMigration, churnWatch, standard, healthy };
 }
 
-// Migration Lead — operational throat-to-choke
+// CSM default — operational throat-to-choke
 export function attentionScore(c: Customer): number {
   let score = 0;
   if (c.health.overall === 'red') score += 1000;
@@ -107,19 +107,11 @@ export function sortByRoleAttention(
   role: Role,
 ): Customer[] {
   const scoreFn =
-    role === 'migration_lead'
-      ? attentionScore
-      : role === 'csm'
-        ? csmAttentionScore
-        : role === 'ae'
-          ? aeAttentionScore
-          : role === 'specialist'
-            ? specialistAttentionScore
-            : role === 'function_lead'
-              ? functionLeadAttentionScore
-              : role === 'vp_operations'
-                ? vpOpsAttentionScore
-                : attentionScore;
+    role === 'csm'
+      ? csmAttentionScore
+      : role === 'ghostbuster'
+        ? vpOpsAttentionScore // escalation-shaped urgency
+        : attentionScore; // implementation_manager + default
 
   return [...customers].sort((a, b) => scoreFn(b) - scoreFn(a));
 }
