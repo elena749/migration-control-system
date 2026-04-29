@@ -24,13 +24,6 @@ export function AccountCard({ customer, pulsingEnabled }: AccountCardProps) {
     customer.tier === 'churn_watch' ? 'bg-tier-churn' :
     'bg-tier-standard';
 
-  // Urgency border on left of directive section
-  const urgencyBorderClass =
-    directive.urgency === 'critical' ? 'border-l-health-red' :
-    directive.urgency === 'high' ? 'border-l-health-amber' :
-    directive.urgency === 'medium' ? 'border-l-accent' :
-    'border-l-border-default';
-
   // Status badge text
   const statusBadge = computeStatusBadge(customer);
 
@@ -69,9 +62,9 @@ export function AccountCard({ customer, pulsingEnabled }: AccountCardProps) {
           </div>
 
           {/* Next Move section — the actionable content */}
-          <div className={`pl-3 border-l-2 ${urgencyBorderClass} -ml-3 mb-2`}>
-            <div className="text-xs uppercase tracking-wider text-ink-tertiary font-semibold mb-1.5">
-              Today
+          <div className="mb-2">
+            <div className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-1.5">
+              Today's Move
             </div>
             <div className="text-sm text-ink-primary leading-relaxed mb-2">
               {directive.text}
@@ -150,13 +143,13 @@ function ProfileChips({ customer }: { customer: Customer }) {
 
 function HealthDot({ signal, pulse = false }: { signal: HealthSignal; pulse?: boolean }) {
   const colorClass =
-    signal === 'red' ? 'bg-health-red' :
-    signal === 'amber' ? 'bg-health-amber' :
-    'bg-health-green';
+    signal === 'red' ? 'bg-health-red ring-health-red/20' :
+    signal === 'amber' ? 'bg-health-amber ring-health-amber/20' :
+    'bg-health-green ring-health-green/20';
   return (
     <span
       className={`
-        inline-block w-2 h-2 rounded-full transition-colors duration-200
+        inline-block w-3 h-3 rounded-full ring-2 transition-colors duration-200
         ${colorClass}
         ${pulse ? 'animate-pulse-pill' : ''}
       `}

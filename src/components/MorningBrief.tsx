@@ -54,10 +54,10 @@ function BriefHeader({ accountCount, redCount }: { accountCount: number; redCoun
 
   return (
     <div className="mb-6 pb-4 border-b border-border-default">
-      <div className="text-xs uppercase tracking-wider text-ink-tertiary font-semibold mb-1">
+      <div className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-1">
         Morning Brief — {today}
       </div>
-      <div className="text-lg font-semibold text-ink-primary">
+      <div className="text-2xl font-semibold text-neutral-900 tracking-tight">
         {accountCount} account{accountCount === 1 ? '' : 's'} in your brief
         {redCount > 0 && (
           <span className="text-health-red font-medium ml-2">

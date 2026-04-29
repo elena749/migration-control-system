@@ -74,7 +74,7 @@ export function TopBar() {
       className="flex items-center justify-between bg-bg-surface border-b border-border-default px-4"
       style={{ height: 56 }}
     >
-      <div className="text-xl font-semibold text-ink-primary">
+      <div className="text-sm font-normal text-neutral-500 tracking-tight">
         Migration Control System
       </div>
 

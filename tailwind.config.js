@@ -17,7 +17,7 @@ export default {
         'health-amber': '#D97706',
         'health-red': '#DC2626',
         'tier-senior': '#1E40AF',
-        'tier-churn': '#EA580C',
+        'tier-churn': '#DC2626',
         'tier-standard': '#64748B',
         'flag-legal': '#7C3AED',
         'flag-protected': '#CA8A04',
