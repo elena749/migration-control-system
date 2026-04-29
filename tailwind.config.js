@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-  safelist: ['animate-pulse-pill'],
+  safelist: ['animate-pulse-pill', 'animate-banner-slide-in'],
   theme: {
     extend: {
       colors: {
@@ -41,9 +41,14 @@ export default {
           '0%, 100%': { transform: 'scale(1)', opacity: '1' },
           '50%': { transform: 'scale(1.15)', opacity: '0.85' },
         },
+        'banner-slide-in': {
+          '0%': { transform: 'translateY(-12px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
       },
       animation: {
         'pulse-pill': 'pulse-pill 2s ease-in-out infinite',
+        'banner-slide-in': 'banner-slide-in 200ms ease-out',
       },
     },
   },

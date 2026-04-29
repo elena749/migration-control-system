@@ -114,6 +114,34 @@ Forced choice (exactly one) prevents "blocked" from becoming a generic excuse fi
 
 ---
 
+## Next Move per action
+
+Every action carries enough context to generate a directive — the next move someone needs to make. The action's data record includes the inputs; the directive itself is generated at render time by Layer 7 logic.
+
+Each action has:
+
+```
+description: what needs to happen on this account
+state: ACTING | BLOCKED_BUT_DRIVEN | ESCALATING
+if BLOCKED: blockerCategory (CUSTOMER_SIDE / DEEL_INTERNAL /
+            THIRD_PARTY / LEGAL_COMPLIANCE)
+ageDays: how long this action has been in its current state
+fiveDayBoundaryBreach: boolean, true if past 5d
+ownerRole: who's accountable for the next move on this action
+trackContext: A | B | mixed (if applicable)
+countryContext: country code(s) if applicable
+```
+
+The action data record contains the *inputs* for directive generation. The Next Move directive itself (the sentence telling someone what to do) is computed at render time, not stored. This keeps the system honest — the directive can never drift from the action's actual state.
+
+## Pattern-based directive generation
+
+Each combination of (state, blocker category, age) maps to a directive template. Layer 7 specifies the templates. Layer 4's contribution is making sure every action carries enough state for the templates to fire correctly.
+
+The key invariant: every action in the system can produce a directive. There is no action state for which the system has nothing to say. If the system can't generate a directive, the action data record is incomplete — that's a system bug, not a user-facing limitation.
+
+---
+
 ## Escalation routing (by trigger and blocker type)
 
 Routes go to *functions*, not function heads. Function-head escalation is reserved for systemic patterns (Layer 3 principle: function heads are destinations for systemic issues, not first-line escalation routes for single-account problems).

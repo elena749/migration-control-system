@@ -5,6 +5,7 @@ import {
   type Dispatch,
   type ReactNode,
 } from 'react';
+import type { HealthSignal } from '../data/customers';
 
 export type Role =
   | 'migration_lead'
@@ -14,11 +15,19 @@ export type Role =
   | 'function_lead'
   | 'vp_operations';
 
+export interface NorthwindFlipProgress {
+  ticketsState: HealthSignal;
+  milestoneState: HealthSignal;
+  stakeholderState: HealthSignal;
+  bannerVisible: boolean;
+}
+
 export interface AppState {
   selectedRole: Role;
   selectedAccountId: number | null;
   northwindFlipped: boolean;
   northwindFlipInProgress: boolean;
+  northwindFlipProgress: NorthwindFlipProgress;
 }
 
 export type AppAction =
@@ -26,13 +35,25 @@ export type AppAction =
   | { type: 'SET_SELECTED_ACCOUNT'; payload: number | null }
   | { type: 'START_NORTHWIND_FLIP' }
   | { type: 'COMPLETE_NORTHWIND_FLIP' }
+  | { type: 'FLIP_NORTHWIND_TICKETS'; payload: 'amber' | 'red' }
+  | { type: 'FLIP_NORTHWIND_MILESTONE'; payload: 'amber' | 'red' }
+  | { type: 'FLIP_NORTHWIND_STAKEHOLDER'; payload: 'amber' | 'red' }
+  | { type: 'SHOW_NORTHWIND_BANNER' }
   | { type: 'RESET_DEMO' };
+
+const initialFlipProgress: NorthwindFlipProgress = {
+  ticketsState: 'green',
+  milestoneState: 'green',
+  stakeholderState: 'green',
+  bannerVisible: false,
+};
 
 export const initialState: AppState = {
   selectedRole: 'migration_lead',
-  selectedAccountId: 2, // Halfbrick
+  selectedAccountId: 2,
   northwindFlipped: false,
   northwindFlipInProgress: false,
+  northwindFlipProgress: initialFlipProgress,
 };
 
 function reducer(state: AppState, action: AppAction): AppState {
@@ -42,12 +63,48 @@ function reducer(state: AppState, action: AppAction): AppState {
     case 'SET_SELECTED_ACCOUNT':
       return { ...state, selectedAccountId: action.payload };
     case 'START_NORTHWIND_FLIP':
-      return { ...state, northwindFlipInProgress: true };
+      return {
+        ...state,
+        northwindFlipInProgress: true,
+        northwindFlipProgress: { ...initialFlipProgress },
+      };
     case 'COMPLETE_NORTHWIND_FLIP':
       return {
         ...state,
         northwindFlipInProgress: false,
         northwindFlipped: true,
+      };
+    case 'FLIP_NORTHWIND_TICKETS':
+      return {
+        ...state,
+        northwindFlipProgress: {
+          ...state.northwindFlipProgress,
+          ticketsState: action.payload,
+        },
+      };
+    case 'FLIP_NORTHWIND_MILESTONE':
+      return {
+        ...state,
+        northwindFlipProgress: {
+          ...state.northwindFlipProgress,
+          milestoneState: action.payload,
+        },
+      };
+    case 'FLIP_NORTHWIND_STAKEHOLDER':
+      return {
+        ...state,
+        northwindFlipProgress: {
+          ...state.northwindFlipProgress,
+          stakeholderState: action.payload,
+        },
+      };
+    case 'SHOW_NORTHWIND_BANNER':
+      return {
+        ...state,
+        northwindFlipProgress: {
+          ...state.northwindFlipProgress,
+          bannerVisible: true,
+        },
       };
     case 'RESET_DEMO':
       return initialState;

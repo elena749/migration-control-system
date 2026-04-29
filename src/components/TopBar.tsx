@@ -15,13 +15,44 @@ export function TopBar() {
   const demoDisabled =
     state.northwindFlipped || state.northwindFlipInProgress;
 
+  const demoLabel = state.northwindFlipped
+    ? 'Northwind degradation simulated'
+    : state.northwindFlipInProgress
+      ? 'Simulating…'
+      : 'Simulate Northwind degradation';
+
   function handleDemoClick() {
-    console.log('[demo] START_NORTHWIND_FLIP');
     dispatch({ type: 'START_NORTHWIND_FLIP' });
-    window.setTimeout(() => {
-      console.log('[demo] COMPLETE_NORTHWIND_FLIP');
-      dispatch({ type: 'COMPLETE_NORTHWIND_FLIP' });
-    }, 2200);
+
+    setTimeout(
+      () => dispatch({ type: 'FLIP_NORTHWIND_TICKETS', payload: 'amber' }),
+      200,
+    );
+    setTimeout(
+      () => dispatch({ type: 'FLIP_NORTHWIND_TICKETS', payload: 'red' }),
+      400,
+    );
+
+    setTimeout(
+      () => dispatch({ type: 'FLIP_NORTHWIND_MILESTONE', payload: 'amber' }),
+      800,
+    );
+    setTimeout(
+      () => dispatch({ type: 'FLIP_NORTHWIND_MILESTONE', payload: 'red' }),
+      1000,
+    );
+
+    setTimeout(
+      () => dispatch({ type: 'FLIP_NORTHWIND_STAKEHOLDER', payload: 'amber' }),
+      1400,
+    );
+    setTimeout(
+      () => dispatch({ type: 'FLIP_NORTHWIND_STAKEHOLDER', payload: 'red' }),
+      1600,
+    );
+    setTimeout(() => dispatch({ type: 'SHOW_NORTHWIND_BANNER' }), 1600);
+
+    setTimeout(() => dispatch({ type: 'COMPLETE_NORTHWIND_FLIP' }), 2200);
   }
 
   function handleResetClick() {
@@ -70,7 +101,7 @@ export function TopBar() {
           disabled={demoDisabled}
           className="border border-accent text-accent rounded-md px-3 py-1.5 text-sm font-medium hover:bg-accent/5 disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          Simulate Northwind degradation
+          {demoLabel}
         </button>
         <button
           type="button"

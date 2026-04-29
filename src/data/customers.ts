@@ -63,6 +63,23 @@ export interface Specialist {
   reason: string;
 }
 
+export interface RoutingState {
+  role: string;
+  reason: string;
+  waitingOn?: 'customer' | 'deel_internal' | 'third_party' | null;
+  waitingSinceDays?: number;
+  lastAction?: string;
+  nextActionOwner?: string;
+}
+
+export interface EscalationEvent {
+  tier: 2 | 3 | 4;
+  triggeredDaysAgo: number;
+  triggeredBy: string;
+  targetRole: 'CSM Manager' | 'Head of CS' | 'Ghostbuster';
+  acknowledgementState: 'pending' | 'acknowledged' | 'resolved';
+}
+
 export interface Action {
   id: string;
   type: 'friction_surface' | 'quote_workflow' | 'escalation' | 'renewal_prep';
@@ -74,6 +91,7 @@ export interface Action {
   fiveDayBoundaryBreach: boolean;
   trackContext?: 'A' | 'B' | 'mixed';
   countryContext?: string;
+  nextMoveBy?: string; // "EOD today" | "EOD tomorrow" | "within 48h" | "by [day]" | etc.
 }
 
 export interface CustomerFacingSLA {
@@ -151,6 +169,12 @@ export interface Customer {
     deelListRate: number;
     deelEquivalentRate: number;
   };
+
+  // Routing state per relationship (Layer 7)
+  routingState?: RoutingState[];
+
+  // Active escalation events (Layer 3)
+  escalationEvents?: EscalationEvent[];
 }
 
 // =====================
@@ -252,7 +276,7 @@ export const customers: Customer[] = [
     },
     tier: 'churn_watch',
     tierTransition: 'auto_promoted',
-    tierTransitionDayOffset: -14,
+    tierTransitionDayOffset: -7,
     originalTier: 'standard',
     flags: [],
     complexityScore: 54,
@@ -317,6 +341,7 @@ export const customers: Customer[] = [
         fiveDayBoundaryBreach: true,
         trackContext: 'A',
         countryContext: 'BR',
+        nextMoveBy: 'EOD tomorrow',
       },
       {
         id: 'halfbrick-in-1',
@@ -342,6 +367,42 @@ export const customers: Customer[] = [
       },
     ],
     customerFacingSLA: { active: true, responseWindowHours: 24, hoursElapsed: 3 },
+    routingState: [
+      {
+        role: 'Payroll IM (BR)',
+        reason: 'Brazil eSocial validation delay',
+        waitingOn: 'customer',
+        waitingSinceDays: 5,
+        lastAction: 'Second follow-up sent to HR lead Monday',
+        nextActionOwner: 'Customer exec sponsor (escalation)',
+      },
+      {
+        role: 'Payroll IM (IN)',
+        reason: 'India statutory compliance review',
+        waitingOn: 'third_party',
+        waitingSinceDays: 3,
+        lastAction: 'Government system delay confirmed by partner',
+        nextActionOwner: 'IN partner (no Deel-side action available)',
+      },
+      {
+        role: 'CSM team lead (Compliance)',
+        reason: 'Multi-jurisdictional ticket cascade',
+        waitingOn: 'deel_internal',
+        waitingSinceDays: 2,
+        lastAction: 'Compliance review scheduled for Wednesday',
+        nextActionOwner: 'Compliance team lead',
+      },
+    ],
+    escalationEvents: [
+      {
+        tier: 3,
+        triggeredDaysAgo: 12,
+        triggeredBy:
+          'Auto-promotion to Churn Watch (Day 14 ago) — cross-functional channel activated',
+        targetRole: 'Head of CS',
+        acknowledgementState: 'acknowledged',
+      },
+    ],
   },
 
   {
@@ -711,6 +772,7 @@ export const customers: Customer[] = [
         fiveDayBoundaryBreach: true,
         trackContext: 'A',
         countryContext: 'DE/NL/FR',
+        nextMoveBy: 'EOD today',
       },
       {
         id: 'meridian-tax-1',
@@ -731,6 +793,42 @@ export const customers: Customer[] = [
       deelListRate: 899,
       deelEquivalentRate: 580,
     },
+    routingState: [
+      {
+        role: 'Compliance (DE/NL/FR)',
+        reason: 'Benefits substitution review',
+        waitingOn: 'deel_internal',
+        waitingSinceDays: 5,
+        lastAction:
+          'Compliance team drafting position; review scheduled today',
+        nextActionOwner: 'Compliance team lead',
+      },
+      {
+        role: 'Payroll IM (BR)',
+        reason: 'eSocial sync coordination with Omnipresent',
+        waitingOn: 'third_party',
+        waitingSinceDays: 3,
+        lastAction: 'Joint call with Omnipresent migration team Monday',
+        nextActionOwner: 'Omnipresent migration team',
+      },
+      {
+        role: 'Payroll IM (NL/BR)',
+        reason: 'Tax-election re-flagging (NL 30% ruling, BR statutory)',
+        waitingOn: 'deel_internal',
+        waitingSinceDays: 2,
+        lastAction: 'Initial tax position drafted; awaiting Legal sign-off',
+        nextActionOwner: 'Legal Ops',
+      },
+      {
+        role: 'Implementation Lead (HR IM)',
+        reason: 'CSM continuity break — Omnipresent CSM transitioning out',
+        waitingOn: 'deel_internal',
+        waitingSinceDays: 3,
+        lastAction:
+          'Handover session held last Friday; Deel CSM still onboarding',
+        nextActionOwner: 'Named CSM (with handover support)',
+      },
+    ],
   },
 
   {
@@ -1012,6 +1110,7 @@ export const customers: Customer[] = [
         ageDays: 6,
         ownerRole: 'CSM + AE',
         fiveDayBoundaryBreach: true,
+        nextMoveBy: 'EOD today',
       },
       {
         id: 'palomar-ng-quote-1',
@@ -1032,6 +1131,33 @@ export const customers: Customer[] = [
       deelListRate: 899,
       deelEquivalentRate: 575,
     },
+    routingState: [
+      {
+        role: 'Senior CSM',
+        reason: 'CFO silent 6 days on FX variance',
+        waitingOn: 'customer',
+        waitingSinceDays: 6,
+        lastAction: 'Second outreach sent Tuesday; no response',
+        nextActionOwner: 'Customer exec sponsor (active engagement)',
+      },
+      {
+        role: 'AE',
+        reason: 'Track B re-quote for Nigeria workers',
+        waitingOn: 'customer',
+        waitingSinceDays: 2,
+        lastAction: 'Quote delivered; pending customer response',
+        nextActionOwner: 'Customer (within 5d quote window)',
+      },
+    ],
+    escalationEvents: [
+      {
+        tier: 2,
+        triggeredDaysAgo: 4,
+        triggeredBy: 'CFO silent 4+ days at trigger; Churn Watch tier',
+        targetRole: 'CSM Manager',
+        acknowledgementState: 'acknowledged',
+      },
+    ],
   },
 
   {
@@ -1206,6 +1332,43 @@ export const customers: Customer[] = [
       deelListRate: 899,
       deelEquivalentRate: 555,
     },
+    routingState: [
+      {
+        role: 'Senior CSM + AE',
+        reason: 'Joint retention engagement — competitor comparison active',
+        waitingOn: 'customer',
+        waitingSinceDays: 4,
+        lastAction:
+          'Retention call held Monday; customer still evaluating',
+        nextActionOwner: 'Customer leadership decision',
+      },
+      {
+        role: 'Payroll IM (MX)',
+        reason: 'Mexico payroll setup — worker complaints escalating',
+        waitingOn: 'deel_internal',
+        waitingSinceDays: 4,
+        lastAction:
+          'Resolution plan drafted; pending engineering review',
+        nextActionOwner: 'Payroll IM (MX) + engineering',
+      },
+      {
+        role: 'AE',
+        reason: 'Track B re-quote for Turkey workers',
+        waitingOn: 'customer',
+        waitingSinceDays: 3,
+        lastAction: 'Quote delivered under retention pressure',
+        nextActionOwner: 'Customer (within 4d quote window)',
+      },
+    ],
+    escalationEvents: [
+      {
+        tier: 2,
+        triggeredDaysAgo: 5,
+        triggeredBy: 'Customer signaled competitor evaluation',
+        targetRole: 'CSM Manager',
+        acknowledgementState: 'acknowledged',
+      },
+    ],
   },
 ];
 

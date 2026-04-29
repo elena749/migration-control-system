@@ -1,180 +1,175 @@
-# Owner Assignment (Routing Layer)
+# Owner Assignment + Escalation (Routing Layer)
 
-**Layer 3 of the Migration Control System. Defines who owns each account through migration, how seniority routing depends on tier, what specialists get pulled in by flag, and what changes operationally when health auto-promotes an account.**
-
----
-
-## The three customer-facing owner roles
-
-Every account in the migration cohort has three owners, regardless of tier. These are roles, not titles — who fills each role depends on tier (next section).
-
-**Account Owner (CSM)** — owns the customer relationship end-to-end through migration. Single point of contact for the customer. Responsible for relationship health, exec sponsor engagement, and overall migration confidence.
-
-**Commercial Owner (Account Executive)** — owns repricing decisions, contract terms, bundle-upgrade plays. Loops in for any commercial conversation. Responsible for the disposition outcome (hold / convert / release) and for the Deel-equivalent rate anchor on Track B re-quotes.
-
-**Migration Lead (HR Implementation Manager)** — responsibility hat worn by the HR Implementation Manager assigned to the migration cohort. Owns operational execution: friction surface resolution, milestone tracking, cross-functional coordination. The "get it done" role. Dissolves into normal CS ownership once migration completes — temporary by design.
-
-These three are the customer-facing owners. Specialists pulled in by flag (next section) are consultative, not co-owners.
+**Layer 3 of the Migration Control System. Defines who owns each account, how work routes from the owner to specialists, and how escalation flows when the owner can't unstick a stuck state.**
 
 ---
 
-## Tier-driven seniority routing
+## Single owner per account: the CSM
 
-Tier doesn't change *what* is owned — it changes *who* (seniority and dedication model) owns it.
+The CSM (Customer Success Manager) is the single point of accountability for migration success. They own the customer relationship, drive daily progress, route work to specialists, and escalate when their routing isn't working.
 
-```
-Senior Migration:
-  Account Owner    → Named CSM (dedicated portfolio)
-  Commercial Owner → Named AE (regional, deal authority)
-  Migration Lead   → Named HR IM (dedicated to account)
-
-Churn Watch:
-  Account Owner    → Named CSM (dedicated)
-  Commercial Owner → Named AE (commercial retention authority)
-  Migration Lead   → Named HR IM (dedicated)
-  + Cross-functional escalation auto-active on entry
-
-Standard Flow:
-  Account Owner    → Pooled CSM (queue-based)
-  Commercial Owner → Regional AE (queue-based)
-  Migration Lead   → Pooled HR IM (queue-based)
-```
-
-**Named vs Pooled** is the structural distinction. A Named owner has the account in their dedicated portfolio with continuity of relationship. A Pooled owner takes accounts from a queue — the account still has an owner at any given moment, but continuity across interactions is not guaranteed.
-
-The routing pattern reflects how SaaS CS organizations typically structure CSM assignment based on account value and complexity. It is consistent with Luke Ferrel's publicly described portfolio-and-incentive model at Deel, though specific internal terminology may differ.
-
----
-
-## Flag-driven specialist routing
-
-Stackable flags from Layer 2 pull in additional specialists alongside the three customer-facing owners. Specialists are consultative resources the Migration Lead engages for specific friction surfaces — they do not replace the three owners.
+This is a deliberate departure from "three owner" or RACI-style models that diffuse accountability across multiple parties. One throat to choke. One person whose performance is measured against the migration outcome. Everyone else is engaged, not owning.
 
 ```
-Legal Escalation flag (sku_mismatch_flag = TRUE):
-  + US PEO complications     → Head of US Legal team
-  + Multi-jurisdictional     → Legal Ops team
-                               escalates to General Counsel for systemic issues
-  + Contract drafting        → Legal Ops team
+ACCOUNTABILITY:
+CSM owns migration success
+CSM is accountable to CSM Manager
+CSM Manager is accountable to Head of CS
+Head of CS is accountable to COO
 
-Contract-Protected flag (track_a_dominant + multi-year contract):
-  + Contract review on any change  → Legal Ops team
-  + Renewal preparation 90d ahead  → Account Owner + Commercial Owner pair
-                                     (joint planning workstream)
+ROUTING (the CSM directs work to):
 
-High-risk country exposure (BR, IN, NG, AE, TR + others
-flagged as high-risk in Layer 1):
-  + Country-specific payroll work  → Payroll Implementation per-country specialist
-                                     reports up to Director of Payroll Implementation
-  + Country compliance review      → Compliance team
-                                     escalates to Chief Compliance Officer for
-                                     systemic regulatory issues
-  + Immigration / visa work        → Global Mobility team
-                                     (sits within Global Immigration Sales scope
-                                     under Head of Enterprise Sales)
+AE (Account Executive): commercial decisions
+— repricing, disposition recommendation, contract changes
+Implementation Lead (HR IM / Implementation Manager): operational migration
+— playbook execution, milestone progress, customer-side coordination
+Specialists (per-function, per-country): function-specific work
+— Payroll IM (per country), Legal Ops, US Legal, Compliance
+Customer-side stakeholders: HR lead, Finance lead, exec sponsor
+
+ENGAGEMENT vs. OWNERSHIP:
+Specialists, AEs, and Implementation Leads are "engaged" with accounts.
+They do work. They have accountability for their function's contribution.
+But they don't own the account. The CSM does.
+
+This means: when a customer is unhappy, the CSM is the one called.
+When a milestone slips, the CSM is the one who explains.
+When the account is at risk, the CSM is the retention driver.
 ```
 
-**Multiple flags stack.** An account with Legal Escalation + high-risk country exposure pulls in both Legal Ops and the relevant Payroll Implementation specialists. The Migration Lead coordinates across all consultative resources; the customer experiences a single throat-to-choke.
+## CSM seniority by tier
 
----
-
-## Tier transition triggers
-
-When health auto-promotes an account from Standard Flow → Churn Watch (Layer 2 mechanic), the ownership model changes operationally. The auto-promotion is not just a status change — it is an event with concrete downstream consequences.
+The CSM exists for every account. What changes by tier is the seniority of the assigned CSM.
 
 ```
-Standard Flow → Churn Watch (auto-promotion event):
+Senior Migration tier (Meridian, Northwind):
+→ Named senior CSM (dedicated portfolio, individual book)
 
-  Ownership upgrade (Pooled → Named):
-    + Account Owner: Pooled CSM → Named CSM
-    + Commercial Owner: Regional AE → Named AE
-                        (with retention decision authority)
-    + Migration Lead: Pooled HR IM → Named HR IM
+Churn Watch tier (Halfbrick, Palomar, Pivot):
+→ Named senior CSM with retention specialty
+→ Direct CSM Manager visibility on weekly cadence
 
-  Cross-functional escalation activates:
-    + VP Operations notified of tier transition
-    + Cross-functional escalation channel opens for the account
-
-  Workflow intensity changes:
-    + Customer-initiated communication: 24h response SLA
-    + Internal sync cadence: weekly → twice-weekly
-    + Bundle-upgrade play unlocked as alternative to fee retention
-
-  Disposition recommendation:
-    + System recommends re-evaluating disposition
-      (most auto-promoted accounts move from 'convert' to active retention)
+Standard Flow tier (Soundtrap, Proof, Layer.ai, Cube, Sphere, Kestrel, Corvus):
+→ Pooled CSM (round-robin assignment from CS pool)
+→ CSM Manager involvement only on escalation
 ```
 
-Cross-functional escalation activates **on tier transition events**, not on steady-state Churn Watch tier alone. Accounts that entered Churn Watch at intake (e.g., short-tenure high-volatility accounts) are in steady-state retention work and do not trigger the cross-functional channel — they are owned within the CS retention workstream.
+Pooled CSMs are real CSMs, not junior. The pooled designation means the customer has a single CSM (still one owner) but assignment is rotational rather than dedicated. For the customer, this is invisible — they have one person they call.
 
----
-
-## Escalation paths
-
-Three levels of escalation, in order. Function heads are destinations for systemic issues, not first-line escalation routes for single-account problems.
-
-### Level 1: In-function escalation
+## Routing relationships per tier
 
 ```
-Customer relationship issues:
-  CSM → CSM team lead → Director-level inside CS org
-  → Global Head of Customer Success only for systemic issues
+ALL TIERS:
+AE — commercial decisions, repricing, disposition
+Implementation Lead (HR IM) — operational migration execution
 
-Commercial / pricing disputes:
-  AE → AE team lead → Director-level inside Sales
-  → Head of Enterprise Sales only for systemic issues
+ADDITIONAL ROUTING TRIGGERED BY CONDITION:
 
-Country-specific payroll:
-  Payroll IM → Payroll Ops manager
-  → Director of Payroll Implementation only for systemic issues
+IF sku_mismatch_flag (Legal Escalation):
++ Legal Ops — multi-jurisdictional contract review
++ US Legal — if PEO-US workers present (Proof, Northwind, Meridian, etc.)
 
-Country compliance / regulatory:
-  Compliance team → Compliance ops manager
-  → Chief Compliance Officer only for systemic issues
+IF Track B workers active in 7-day quote window:
++ AE drives commercial decision (already routed; elevated priority)
 
-Legal / contract disputes:
-  Legal Ops → Legal Ops manager
-  → General Counsel only for systemic issues
+IF customer footprint includes high-risk country (DE, FR, NL, BR, IN, AE, NG, TR):
++ Country-specific Payroll IM
++ Compliance for the relevant jurisdiction
 
-US PEO-specific issues:
-  US Legal team → routes through Head of US Legal
-
-Immigration / visa:
-  Global Mobility team → routes through Head of Enterprise Sales
-                         (Global Immigration Sales scope)
-
-Worker re-papering / data migration:
-  HR Implementation Manager (the Migration Lead)
-  → HR Implementation team lead
+IF auto-promoted to Churn Watch (health-driven):
++ Retention specialist paired alongside CSM
++ Cross-functional escalation channel activated
 ```
 
-### Level 2: Cross-functional escalation
+These are **engagement relationships** — the CSM has visibility into who's doing what, and routes work through these channels. None of them are co-owners.
 
-When Level 1 routes don't resolve, or when an issue spans multiple functions and no single function-head can own it:
+## The escalation chain — four tiers, CEO not in chain
 
-```
-→ VP Operations (oversees 11 ops verticals — payroll, HR, compliance,
-   FinCrime, support, expansion, immigration, benefits, fintech, etc.)
-```
-
-This is where stuck-state cross-functional issues land before any executive escalation. Auto-promoted Churn Watch accounts activate this channel by default.
-
-### Level 3: Break-glass
+The CSM drives the account. When they can't unstick something, escalation moves up:
 
 ```
-→ COO / Ghostbusters team
+TIER 1 — CSM
+Default state. CSM drives the account, routes work, manages the customer.
+Most accounts stay here permanently.
+
+TIER 2 — CSM Manager
+Triggers:
+- Health degraded to amber 5+ days without resolution
+- Customer relationship issues CSM can't resolve alone
+- Capacity overload (CSM has too many at-risk accounts simultaneously)
+Role:
+- Coaches CSM on retention approach
+- Engages directly if customer relationship has broken down with CSM
+- Reassigns to senior CSM if pattern indicates fit issue
+
+TIER 3 — Head of CS (or VP CS)
+Triggers:
+- Cross-functional blocker (Legal won't sign off, Implementation can't deliver)
+- CSM Manager has tried convening and failed
+- Pattern across multiple accounts indicating systemic issue
+Role:
+- Convenes function heads (Head of Legal Ops, Head of Implementation)
+- Resolves cross-functional disputes
+- Triggers Ghostbuster engagement if convening fails
+
+TIER 4 — Ghostbusters (break-glass)
+Triggers:
+- Tier 3 convening has failed or stalled 7+ days
+- Account at risk of churn while system is stuck
+- Pattern suggests function heads can't resolve internally
+Role:
+- COO-empowered cross-functional intervention
+- Direct authority to assign work, override function priorities
+- Reports findings back to COO for systemic remediation
+
+Ghostbusters are not a fifth owner. They're the COO's intervention
+surface for when the CSM-led routing has structurally failed.
+
+CEO is not in the escalation chain.
+Ghostbusters report to COO. COO handles whatever remediation is needed
+at executive level. CEO involvement signals catastrophic system failure.
 ```
 
-Reserved for problems where Level 1 and Level 2 cannot resolve. Never first-line escalation. The break-glass route exists as the structural backstop, not as a routine path.
+## Escalation events — logged, not just suggested
 
----
+When the system's directive recommends escalation (Tier 2/3/4), this is logged as an event with a timestamp. Escalation is a tracked workflow state, not advisory text.
+
+Escalation event record:
+
+```
+escalation_tier: 2 | 3 | 4
+triggered_at: timestamp
+triggered_by: directive that fired (e.g., "5d boundary breach on customer-side blocker")
+target_role: "CSM Manager" | "Head of CS" | "Ghostbuster"
+acknowledgement_state: "pending" | "acknowledged" | "resolved"
+acknowledgement_at: timestamp (when target party confirmed engagement)
+```
+
+This makes escalation visible:
+- The CSM sees "Escalation triggered to CSM Manager (pending acknowledgement)"
+- The CSM Manager sees the escalated accounts in their own brief, waiting for their engagement
+- If acknowledgement doesn't happen within an SLA (24h for Tier 2, 48h for Tier 3, immediate for Tier 4), the system surfaces this — escalation that's gone unnoticed becomes its own visible problem
+
+For the v1 demo: the system doesn't actually send Slack/email notifications. It surfaces escalation state visually so the workflow loop is visible.
+
+## Customer-facing SLA per tier
+
+The customer-facing SLA is independent of the ownership model. It's about the customer's experience:
+
+```
+Senior Migration: 48-hour response SLA on customer-initiated escalation
+Churn Watch:      24-hour response SLA on customer-initiated escalation
+Standard Flow:    72-hour response SLA on customer-initiated escalation
+```
+
+The CSM owns hitting these SLAs. They route to the appropriate function for substance, but the response itself is the CSM's accountability.
 
 ## What this layer changes about the system
 
-- **Logic, not hardcoded assignments.** Layer 3 specifies the routing rules. Per-account assignments are derived from Layer 2 (tier + flags) by application code or LLM at runtime — they live in Layer 5 (demo flow) where they're rendered for the UI. This makes the system reusable for the next acquisition without re-editing the routing layer.
+- **Single ownership.** One CSM per account. No co-owners. No diffused accountability. This is the cleanest possible operational principle and the most aligned with how Deel actually operates.
 
-- **Three owners, never more.** Specialists are consultative resources, not co-owners. Customers always have one Account Owner, one Commercial Owner, one Migration Lead — even when six specialists are engaged behind the scenes. This is the throat-to-choke principle that survives complexity.
+- **Routing replaces co-ownership.** Specialists, AEs, Implementation Leads are engaged with accounts but don't own them. The CSM directs them. The data model reflects this — owners are flat (one CSM), engagements are routing relationships (a list).
 
-- **Tier transitions are events.** When Halfbrick auto-promotes on Day 14, ownership changes — Pooled becomes Named, cross-functional channel activates, SLAs tighten, disposition gets re-evaluated. Layer 4 (clock state) will surface the timing of these transitions; Layer 5 (demo flow) will surface the operational consequences. The transition is not a label change, it is a workflow event.
+- **Escalation chain is finite.** Four tiers, ending at Ghostbusters. CEO is not in the chain. This makes Ghostbusters the visible break-glass surface for when the line org has failed — exactly what Westgarth's team is for.
 
-- **The Migration Lead role is temporary by design.** It dissolves at migration completion into normal CS ownership. This is consistent with how acquisition migrations actually work — the dedicated migration-execution role exists for the cohort window, then the account becomes a normal Deel CS account. Don't model it as permanent infrastructure; that would over-engineer the layer.
+- **Pooled vs. Named is about CSM seniority, not multiple CSMs.** The customer always has one CSM. Pooled means the assignment is rotational; Named means the CSM is dedicated. For the customer, this is invisible.
