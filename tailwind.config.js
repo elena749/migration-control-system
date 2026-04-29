@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{ts,tsx}'],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  safelist: ['animate-pulse-pill'],
   theme: {
     extend: {
       colors: {
@@ -34,6 +35,15 @@ export default {
       boxShadow: {
         soft: '0 1px 3px rgba(0,0,0,0.04)',
         md: '0 4px 12px rgba(0,0,0,0.08)',
+      },
+      keyframes: {
+        'pulse-pill': {
+          '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+          '50%': { transform: 'scale(1.15)', opacity: '0.85' },
+        },
+      },
+      animation: {
+        'pulse-pill': 'pulse-pill 2s ease-in-out infinite',
       },
     },
   },
