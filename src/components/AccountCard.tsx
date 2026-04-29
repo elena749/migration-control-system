@@ -65,11 +65,8 @@ export function AccountCard({ customer, pulsingEnabled }: AccountCardProps) {
             <div className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-1.5">
               Today's Move
             </div>
-            <div className="text-sm text-ink-primary leading-relaxed mb-2">
+            <div className="text-sm text-ink-primary leading-relaxed">
               {directive.text}
-            </div>
-            <div className="text-xs text-ink-tertiary">
-              {directive.ownerSummary}
             </div>
           </div>
         </div>
@@ -406,29 +403,49 @@ export function HealthSection({ customer }: { customer: Customer }) {
 // Escalation section
 // =====================
 
+function tier4CountdownLine(event: EscalationEvent): string | null {
+  // Per Layer 3 spec: Tier 4 (Ghostbuster) fires once Tier 3 has stalled 7+ days.
+  // Show the countdown line only for Tier 3 events that are within 5d of the
+  // threshold; once already at Tier 4, no countdown.
+  if (event.tier !== 3) return null;
+  const days = event.triggeredDaysAgo;
+  if (days < 5) return null;
+  const countdown = 8 - days; // "auto-fires in N days" — N = 1 when days = 7
+  if (countdown >= 1) {
+    return `→ Tier 4 (Ghostbuster) auto-fires in ${countdown} day${countdown === 1 ? '' : 's'} if no resolution movement`;
+  }
+  return `→ Tier 4 (Ghostbuster) trigger threshold reached — auto-promotion eligible`;
+}
+
 function EscalationSection({ events }: { events: EscalationEvent[] }) {
   return (
     <div>
       <SectionHeading>Active escalations</SectionHeading>
       <ul className="space-y-1">
-        {events.map((event, idx) => (
-          <li key={idx} className="text-xs">
-            <span className="font-medium text-ink-primary">
-              Tier {event.tier}: {event.targetRole}
-            </span>
-            <span className="text-ink-tertiary ml-2">
-              · Triggered {event.triggeredDaysAgo}d ago
-            </span>
-            <span className={`ml-2 font-medium ${
-              event.acknowledgementState === 'acknowledged' ? 'text-health-green' :
-              event.acknowledgementState === 'pending' ? 'text-health-amber' :
-              'text-ink-tertiary'
-            }`}>
-              · {event.acknowledgementState}
-            </span>
-            <div className="text-ink-secondary mt-0.5">{event.triggeredBy}</div>
-          </li>
-        ))}
+        {events.map((event, idx) => {
+          const countdown = tier4CountdownLine(event);
+          return (
+            <li key={idx} className="text-xs">
+              <span className="font-medium text-ink-primary">
+                Tier {event.tier}: {event.targetRole}
+              </span>
+              <span className="text-ink-tertiary ml-2">
+                · Triggered {event.triggeredDaysAgo}d ago
+              </span>
+              <span className={`ml-2 font-medium ${
+                event.acknowledgementState === 'acknowledged' ? 'text-health-green' :
+                event.acknowledgementState === 'pending' ? 'text-health-amber' :
+                'text-ink-tertiary'
+              }`}>
+                · {event.acknowledgementState}
+              </span>
+              <div className="text-ink-secondary mt-0.5">{event.triggeredBy}</div>
+              {countdown && (
+                <div className="text-amber-700 mt-0.5">{countdown}</div>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

@@ -167,7 +167,7 @@ function directiveForAction(action: Action): Directive {
     if (action.blockerCategory === 'CUSTOMER_SIDE') {
       if (action.ageDays >= 5) {
         return {
-          text: `Customer-side blocker past 5-day boundary on ${desc}. Engage customer exec sponsor today. CSM Manager engagement required if no resolution by EOD.`,
+          text: `Customer-side blocker past 5-day boundary on ${desc}. Engage customer exec sponsor by EOD today. CSM Manager engagement required if no resolution by EOD.`,
           ownerSummary: `${owner} drives. CSM escalates to exec sponsor and CSM Manager.`,
           urgency: 'critical',
         };
